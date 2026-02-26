@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Gift Card Giveaway 2026!</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* === BAIT PAGE === */
+    #bait {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .badge {
+      background: #ff4757;
+      color: #fff;
+      padding: 0.4rem 1.2rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    #bait h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #f9ca24, #f0932b, #eb4d4b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #bait p.sub {
+      font-size: 1.15rem;
+      color: #aaa;
+      margin-bottom: 2rem;
+      max-width: 500px;
+    }
+
+    .cards {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      width: 180px;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+
+    .card .icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+    .card h3 { font-size: 1rem; margin-bottom: 0.3rem; }
+    .card p { font-size: 0.8rem; color: #999; }
+
+    .claim-btn {
+      background: linear-gradient(135deg, #f9ca24, #f0932b);
+      color: #000;
+      border: none;
+      padding: 1rem 3rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .claim-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(249, 202, 36, 0.4);
+    }
+
+    .timer {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: #ff6b6b;
+    }
+
+    .timer span {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .fine-print {
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      color: #555;
+      max-width: 400px;
+    }
+
+    /* === RICK ROLL PAGE === */
+    #rickroll {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #rickroll.active {
+      display: flex;
+    }
+
+    #rickroll iframe {
+      width: min(90vw, 800px);
+      aspect-ratio: 16/9;
+      border: none;
+      border-radius: 12px;
+    }
+
+    .gotcha {
+      font-size: clamp(1.5rem, 4vw, 3rem);
+      margin-top: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      animation: rainbow 2s linear infinite;
+    }
+
+    @keyframes rainbow {
+      0%   { color: #ff0000; }
+      16%  { color: #ff8800; }
+      33%  { color: #ffff00; }
+      50%  { color: #00ff00; }
+      66%  { color: #0088ff; }
+      83%  { color: #8800ff; }
+      100% { color: #ff0000; }
+    }
+
+    .gotcha-sub {
+      color: #888;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+
+    /* confetti */
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      top: -20px;
+      z-index: 10000;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        top: 110vh;
+        transform: rotate(720deg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BAIT -->
+  <div id="bait">
+    <div class="badge">Limited Time Only</div>
+    <h1>Free Gift Card Giveaway!</h1>
+    <p class="sub">We're giving away $500 gift cards to the first 100 visitors. Choose your reward below!</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="icon">🎮</div>
+        <h3>Steam</h3>
+        <p>$500 Value</p>
+      </div>
+      <div class="card">
+        <div class="icon">🍎</div>
+        <h3>Apple</h3>
+        <p>$500 Value</p>
+      </div>
+      <div class="card">
+        <div class="icon">🛒</div>
+        <h3>Amazon</h3>
+        <p>$500 Value</p>
+      </div>
+      <div class="card">
+        <div class="icon">🎵</div>
+        <h3>Spotify</h3>
+        <p>1 Year Free</p>
+      </div>
+    </div>
+
+    <button class="claim-btn" onclick="rickRoll()">Claim My Free Gift Card</button>
+
+    <div class="timer">Offer expires in: <span id="countdown">4:59</span></div>
+
+    <p class="fine-print">*No purchase necessary. Must be 18+. Totally real and not suspicious at all. Trust us.</p>
+  </div>
+
+  <!-- RICK ROLL -->
+  <div id="rickroll">
+    <iframe
+      id="rick-video"
+      src=""
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+    ></iframe>
+    <p class="gotcha">You just got Rick Rolled!</p>
+    <p class="gotcha-sub">There was never a gift card. Only Rick.</p>
+  </div>
+
+  <script>
+    // Fake countdown timer
+    (function () {
+      let time = 299;
+      const el = document.getElementById('countdown');
+      setInterval(() => {
+        if (time <= 0) { time = 299; }
+        time--;
+        const m = Math.floor(time / 60);
+        const s = String(time % 60).padStart(2, '0');
+        el.textContent = m + ':' + s;
+      }, 1000);
+    })();
+
+    // The main event
+    function rickRoll() {
+      const roll = document.getElementById('rickroll');
+      const video = document.getElementById('rick-video');
+
+      // autoplay & start at 0s
+      video.src = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&start=0';
+
+      roll.classList.add('active');
+      document.getElementById('bait').style.display = 'none';
+
+      spawnConfetti();
+
+      // Disable back button escape
+      history.pushState(null, '', location.href);
+      window.addEventListener('popstate', () => {
+        history.pushState(null, '', location.href);
+      });
+    }
+
+    // Confetti explosion
+    function spawnConfetti() {
+      const colors = ['#ff0000','#ff8800','#ffff00','#00ff00','#0088ff','#8800ff','#ff00ff'];
+      for (let i = 0; i < 150; i++) {
+        const piece = document.createElement('div');
+        piece.classList.add('confetti-piece');
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        piece.style.animationDelay = (Math.random() * 2) + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        piece.style.width = (Math.random() * 8 + 6) + 'px';
+        piece.style.height = (Math.random() * 8 + 6) + 'px';
+        document.body.appendChild(piece);
+      }
+    }
+  </script>
+</body>
+</html>
