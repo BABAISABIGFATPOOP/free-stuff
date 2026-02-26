@@ -314,6 +314,10 @@
       }
     }
   </style>
+
+  <!-- Firebase SDK (compat CDN for static sites) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -408,10 +412,38 @@
   </div>
 
   <script>
-    // === CONTROL PANEL ===
+    // === FIREBASE SETUP ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyBkFbzNnQsC8eFT_HfqDrchim9ueSD-zvQ",
+      authDomain: "free-stuff-fe1a0.firebaseapp.com",
+      databaseURL: "https://free-stuff-fe1a0-default-rtdb.firebaseio.com",
+      projectId: "free-stuff-fe1a0",
+      storageBucket: "free-stuff-fe1a0.firebasestorage.app",
+      messagingSenderId: "690758943869",
+      appId: "1:690758943869:web:e576db55592ab2bd685d14"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const videoRef = db.ref('config/videoId');
+
+    // === STATE ===
     let panelUnlocked = false;
     let currentVideoId = 'dQw4w9WgXcQ';
 
+    // === LISTEN FOR GLOBAL VIDEO CHANGES (real-time) ===
+    videoRef.on('value', (snapshot) => {
+      const id = snapshot.val();
+      if (id) {
+        currentVideoId = id;
+        // If someone is already being rick rolled, swap the video live
+        const video = document.getElementById('rick-video');
+        if (document.getElementById('rickroll').classList.contains('active')) {
+          video.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&start=0';
+        }
+      }
+    });
+
+    // === CONTROL PANEL ===
     function openPanel() {
       document.getElementById('panel-overlay').classList.add('active');
       if (panelUnlocked) {
@@ -445,25 +477,20 @@
 
     function extractVideoId(input) {
       input = input.trim();
-      // Already a bare ID (11 chars, no slashes/dots)
       if (/^[A-Za-z0-9_-]{11}$/.test(input)) return input;
-      // Try to parse as URL
       try {
         const url = new URL(input);
         if (url.searchParams.has('v')) return url.searchParams.get('v');
-        // youtu.be/ID or youtube.com/embed/ID
         const parts = url.pathname.split('/').filter(Boolean);
         const last = parts[parts.length - 1];
         if (last && /^[A-Za-z0-9_-]{11}$/.test(last)) return last;
       } catch(e) {}
-      // Fallback: return as-is
       return input;
     }
 
     function setVideo(id) {
-      currentVideoId = id;
       document.getElementById('custom-url').value = id;
-      applyVideo(id);
+      pushVideo(id);
     }
 
     function applyCustomVideo() {
@@ -474,25 +501,24 @@
         return;
       }
       const id = extractVideoId(raw);
-      currentVideoId = id;
-      applyVideo(id);
+      pushVideo(id);
     }
 
-    function applyVideo(id) {
-      // Update the iframe if rick roll is already showing
-      const video = document.getElementById('rick-video');
-      if (document.getElementById('rickroll').classList.contains('active')) {
-        video.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&start=0';
-      }
-      document.getElementById('panel-status').textContent = 'Video set to: ' + id;
-      document.getElementById('panel-status').style.color = '#2ed573';
+    // Write to Firebase — all connected clients pick it up instantly
+    function pushVideo(id) {
+      videoRef.set(id).then(() => {
+        document.getElementById('panel-status').textContent = 'Video updated globally: ' + id;
+        document.getElementById('panel-status').style.color = '#2ed573';
+      }).catch((err) => {
+        document.getElementById('panel-status').textContent = 'Firebase error: ' + err.message;
+        document.getElementById('panel-status').style.color = '#ff4757';
+      });
     }
 
     function resetVideo() {
-      currentVideoId = 'dQw4w9WgXcQ';
       document.getElementById('custom-url').value = '';
-      applyVideo(currentVideoId);
-      document.getElementById('panel-status').textContent = 'Reset to Rick Astley. As it should be.';
+      pushVideo('dQw4w9WgXcQ');
+      document.getElementById('panel-status').textContent = 'Reset to Rick Astley globally. As it should be.';
       document.getElementById('panel-status').style.color = '#2ed573';
     }
 
@@ -514,7 +540,6 @@
       const roll = document.getElementById('rickroll');
       const video = document.getElementById('rick-video');
 
-      // autoplay & start at 0s — uses the video set in the control panel
       video.src = 'https://www.youtube.com/embed/' + currentVideoId + '?autoplay=1&start=0';
 
       roll.classList.add('active');
@@ -522,7 +547,6 @@
 
       spawnConfetti();
 
-      // Disable back button escape
       history.pushState(null, '', location.href);
       window.addEventListener('popstate', () => {
         history.pushState(null, '', location.href);
