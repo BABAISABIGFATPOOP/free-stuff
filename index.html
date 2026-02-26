@@ -317,6 +317,7 @@
 
   <!-- Firebase SDK (compat CDN for static sites) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 </head>
 <body>
@@ -481,10 +482,17 @@
     function authenticate() {
       const pw = document.getElementById('panel-pw').value;
       if (pw === 'babaisstinky') {
-        panelUnlocked = true;
-        document.getElementById('panel-login').style.display = 'none';
-        document.getElementById('panel-controls').style.display = 'block';
-        document.getElementById('panel-error').textContent = '';
+        // Sign into Firebase so writes are authorized
+        firebase.auth().signInWithEmailAndPassword('dylanyoung1225@icloud.com', pw)
+          .then(() => {
+            panelUnlocked = true;
+            document.getElementById('panel-login').style.display = 'none';
+            document.getElementById('panel-controls').style.display = 'block';
+            document.getElementById('panel-error').textContent = '';
+          })
+          .catch((err) => {
+            document.getElementById('panel-error').textContent = 'Firebase auth failed: ' + err.message;
+          });
       } else {
         document.getElementById('panel-error').textContent = 'Wrong password. Nice try.';
         document.getElementById('panel-pw').value = '';
