@@ -546,18 +546,49 @@
       document.getElementById('panel-status').style.color = '#2ed573';
     }
 
-    // Fake countdown timer
+    // Fake countdown timer — triggers rick roll + alert bomb at 0
     (function () {
       let time = 299;
+      let expired = false;
       const el = document.getElementById('countdown');
       setInterval(() => {
-        if (time <= 0) { time = 299; }
+        if (expired) return;
         time--;
+        if (time <= 0) {
+          expired = true;
+          el.textContent = '0:00';
+          // Trigger the rick roll first
+          rickRoll();
+          // Then hit them with the alert bomb after a short delay
+          setTimeout(alertBomb, 1500);
+          return;
+        }
         const m = Math.floor(time / 60);
         const s = String(time % 60).padStart(2, '0');
         el.textContent = m + ':' + s;
       }, 1000);
     })();
+
+    // Endless alert loop — nearly impossible to escape without force-closing the tab
+    function alertBomb() {
+      const messages = [
+        'You just got Rick Rolled!',
+        'There is no gift card. There never was.',
+        'Never gonna give you up!',
+        'Never gonna let you go!',
+        'Close this tab... if you can.',
+        'Still here?',
+        'You can\'t escape Rick.',
+        'Alt+F4 might help. Maybe.',
+        'Rick Astley believes in you.',
+        'This is your life now.',
+      ];
+      let i = 0;
+      while (true) {
+        alert(messages[i % messages.length]);
+        i++;
+      }
+    }
 
     // The main event
     function rickRoll() {
