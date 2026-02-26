@@ -365,8 +365,8 @@
       allow="autoplay; encrypted-media"
       allowfullscreen
     ></iframe>
-    <p class="gotcha">You just got Rick Rolled!</p>
-    <p class="gotcha-sub">There was never a gift card. Only Rick.</p>
+    <p class="gotcha" id="gotcha-title">You just got Rick Rolled!</p>
+    <p class="gotcha-sub" id="gotcha-sub">There was never a gift card. Only Rick.</p>
   </div>
 
   <!-- MAGIC BUTTON -->
@@ -398,7 +398,7 @@
           <button class="preset-btn" onclick="setVideo('dQw4w9WgXcQ')">Rick Astley - Never Gonna Give You Up</button>
           <button class="preset-btn" onclick="setVideo('oHg5SJYRHA0')">Rick Roll (Alt Link)</button>
           <button class="preset-btn" onclick="setVideo('xvFZjo5PgG0')">Nyan Cat (10hr)</button>
-          <button class="preset-btn" onclick="setVideo('dQw4w9WgXcQ')">Darude - Sandstorm (jk, it's Rick)</button>
+          <button class="preset-btn" onclick="setVideo('CWExUQcTxB8')">Galaxy Brain</button>
         </div>
 
         <div style="margin-top:1rem">
@@ -430,11 +430,27 @@
     let panelUnlocked = false;
     let currentVideoId = 'dQw4w9WgXcQ';
 
+    // === VIDEO → TEXT MAPPING ===
+    const videoText = {
+      'dQw4w9WgXcQ': { title: 'You just got Rick Rolled!', sub: 'There was never a gift card. Only Rick.' },
+      'oHg5SJYRHA0': { title: 'You just got Rick Rolled!', sub: 'There was never a gift card. Only Rick.' },
+      'xvFZjo5PgG0': { title: 'You just got Nyan Catted!', sub: 'There was never a gift card. Only Nyan Cat.' },
+      'CWExUQcTxB8': { title: 'Galaxy Brain!', sub: 'There was never a gift card. Only Galaxy Brain.' },
+    };
+    const defaultText = { title: 'You just got pranked!', sub: 'There was never a gift card. Never was.' };
+
+    function updateGotchaText(id) {
+      const text = videoText[id] || defaultText;
+      document.getElementById('gotcha-title').textContent = text.title;
+      document.getElementById('gotcha-sub').textContent = text.sub;
+    }
+
     // === LISTEN FOR GLOBAL VIDEO CHANGES (real-time) ===
     videoRef.on('value', (snapshot) => {
       const id = snapshot.val();
       if (id) {
         currentVideoId = id;
+        updateGotchaText(id);
         // If someone is already being rick rolled, swap the video live
         const video = document.getElementById('rick-video');
         if (document.getElementById('rickroll').classList.contains('active')) {
@@ -541,6 +557,7 @@
       const video = document.getElementById('rick-video');
 
       video.src = 'https://www.youtube.com/embed/' + currentVideoId + '?autoplay=1&start=0';
+      updateGotchaText(currentVideoId);
 
       roll.classList.add('active');
       document.getElementById('bait').style.display = 'none';
