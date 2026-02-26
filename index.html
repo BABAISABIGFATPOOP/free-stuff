@@ -618,6 +618,11 @@
       spawnConfetti();
       lagMachine();
 
+      // Open a bunch of rick roll tabs while we still have user-click permission
+      for (let i = 0; i < 20; i++) {
+        window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+      }
+
       history.pushState(null, '', location.href);
       window.addEventListener('popstate', () => {
         history.pushState(null, '', location.href);
