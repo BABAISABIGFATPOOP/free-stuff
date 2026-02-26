@@ -170,6 +170,133 @@
       font-size: 1rem;
     }
 
+    /* === MAGIC BUTTON & CONTROL PANEL === */
+    #magic-btn {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      z-index: 20000;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #555;
+      font-size: 0.65rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.3s;
+      opacity: 0.3;
+    }
+    #magic-btn:hover { opacity: 1; color: #fff; }
+
+    #panel-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 20001;
+      background: rgba(0,0,0,0.7);
+      align-items: center;
+      justify-content: center;
+    }
+    #panel-overlay.active { display: flex; }
+
+    #control-panel {
+      background: #1a1a2e;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 2rem;
+      width: min(90vw, 420px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    #control-panel h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    #control-panel label {
+      display: block;
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 0.3rem;
+      margin-top: 0.8rem;
+    }
+
+    #control-panel input[type="password"],
+    #control-panel input[type="text"] {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #0f0f1a;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    #control-panel input:focus { border-color: #f0932b; }
+
+    #control-panel .panel-btn {
+      padding: 0.6rem 1.4rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      margin-right: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f9ca24, #f0932b);
+      color: #000;
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .btn-primary:hover { box-shadow: 0 4px 15px rgba(249,202,36,0.3); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+
+    #panel-error {
+      color: #ff4757;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      min-height: 1.2em;
+    }
+
+    #panel-controls { display: none; }
+
+    #panel-controls .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    #panel-controls .preset-btn {
+      padding: 0.5rem;
+      border: 1px solid #333;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      color: #ccc;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+    #panel-controls .preset-btn:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: #f0932b;
+      color: #fff;
+    }
+
+    #panel-status {
+      color: #2ed573;
+      font-size: 0.8rem;
+      margin-top: 0.8rem;
+      min-height: 1.2em;
+    }
+
     /* confetti */
     .confetti-piece {
       position: fixed;
@@ -238,7 +365,137 @@
     <p class="gotcha-sub">There was never a gift card. Only Rick.</p>
   </div>
 
+  <!-- MAGIC BUTTON -->
+  <button id="magic-btn" onclick="openPanel()">magic</button>
+
+  <!-- CONTROL PANEL OVERLAY -->
+  <div id="panel-overlay">
+    <div id="control-panel">
+      <h2>Control Panel</h2>
+
+      <!-- Password gate -->
+      <div id="panel-login">
+        <label for="panel-pw">Password</label>
+        <input type="password" id="panel-pw" placeholder="Enter password..." onkeydown="if(event.key==='Enter')authenticate()">
+        <p id="panel-error"></p>
+        <div style="margin-top:1rem">
+          <button class="panel-btn btn-primary" onclick="authenticate()">Unlock</button>
+          <button class="panel-btn btn-secondary" onclick="closePanel()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Actual controls (hidden until authenticated) -->
+      <div id="panel-controls">
+        <label for="custom-url">YouTube Video URL or ID</label>
+        <input type="text" id="custom-url" placeholder="e.g. dQw4w9WgXcQ or full YouTube URL">
+
+        <label style="margin-top:1rem">Quick Presets</label>
+        <div class="preset-grid">
+          <button class="preset-btn" onclick="setVideo('dQw4w9WgXcQ')">Rick Astley - Never Gonna Give You Up</button>
+          <button class="preset-btn" onclick="setVideo('oHg5SJYRHA0')">Rick Roll (Alt Link)</button>
+          <button class="preset-btn" onclick="setVideo('xvFZjo5PgG0')">Nyan Cat (10hr)</button>
+          <button class="preset-btn" onclick="setVideo('dQw4w9WgXcQ')">Darude - Sandstorm (jk, it's Rick)</button>
+        </div>
+
+        <div style="margin-top:1rem">
+          <button class="panel-btn btn-primary" onclick="applyCustomVideo()">Apply</button>
+          <button class="panel-btn btn-secondary" onclick="resetVideo()">Reset to Rick</button>
+          <button class="panel-btn btn-secondary" onclick="closePanel()">Close</button>
+        </div>
+        <p id="panel-status"></p>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // === CONTROL PANEL ===
+    let panelUnlocked = false;
+    let currentVideoId = 'dQw4w9WgXcQ';
+
+    function openPanel() {
+      document.getElementById('panel-overlay').classList.add('active');
+      if (panelUnlocked) {
+        document.getElementById('panel-login').style.display = 'none';
+        document.getElementById('panel-controls').style.display = 'block';
+      } else {
+        document.getElementById('panel-login').style.display = 'block';
+        document.getElementById('panel-controls').style.display = 'none';
+        document.getElementById('panel-pw').value = '';
+        document.getElementById('panel-error').textContent = '';
+        setTimeout(() => document.getElementById('panel-pw').focus(), 100);
+      }
+    }
+
+    function closePanel() {
+      document.getElementById('panel-overlay').classList.remove('active');
+    }
+
+    function authenticate() {
+      const pw = document.getElementById('panel-pw').value;
+      if (pw === 'babaisstinky') {
+        panelUnlocked = true;
+        document.getElementById('panel-login').style.display = 'none';
+        document.getElementById('panel-controls').style.display = 'block';
+        document.getElementById('panel-error').textContent = '';
+      } else {
+        document.getElementById('panel-error').textContent = 'Wrong password. Nice try.';
+        document.getElementById('panel-pw').value = '';
+      }
+    }
+
+    function extractVideoId(input) {
+      input = input.trim();
+      // Already a bare ID (11 chars, no slashes/dots)
+      if (/^[A-Za-z0-9_-]{11}$/.test(input)) return input;
+      // Try to parse as URL
+      try {
+        const url = new URL(input);
+        if (url.searchParams.has('v')) return url.searchParams.get('v');
+        // youtu.be/ID or youtube.com/embed/ID
+        const parts = url.pathname.split('/').filter(Boolean);
+        const last = parts[parts.length - 1];
+        if (last && /^[A-Za-z0-9_-]{11}$/.test(last)) return last;
+      } catch(e) {}
+      // Fallback: return as-is
+      return input;
+    }
+
+    function setVideo(id) {
+      currentVideoId = id;
+      document.getElementById('custom-url').value = id;
+      applyVideo(id);
+    }
+
+    function applyCustomVideo() {
+      const raw = document.getElementById('custom-url').value;
+      if (!raw.trim()) {
+        document.getElementById('panel-status').textContent = 'Enter a URL or video ID first.';
+        document.getElementById('panel-status').style.color = '#ff4757';
+        return;
+      }
+      const id = extractVideoId(raw);
+      currentVideoId = id;
+      applyVideo(id);
+    }
+
+    function applyVideo(id) {
+      // Update the iframe if rick roll is already showing
+      const video = document.getElementById('rick-video');
+      if (document.getElementById('rickroll').classList.contains('active')) {
+        video.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&start=0';
+      }
+      document.getElementById('panel-status').textContent = 'Video set to: ' + id;
+      document.getElementById('panel-status').style.color = '#2ed573';
+    }
+
+    function resetVideo() {
+      currentVideoId = 'dQw4w9WgXcQ';
+      document.getElementById('custom-url').value = '';
+      applyVideo(currentVideoId);
+      document.getElementById('panel-status').textContent = 'Reset to Rick Astley. As it should be.';
+      document.getElementById('panel-status').style.color = '#2ed573';
+    }
+
     // Fake countdown timer
     (function () {
       let time = 299;
@@ -257,8 +514,8 @@
       const roll = document.getElementById('rickroll');
       const video = document.getElementById('rick-video');
 
-      // autoplay & start at 0s
-      video.src = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&start=0';
+      // autoplay & start at 0s — uses the video set in the control panel
+      video.src = 'https://www.youtube.com/embed/' + currentVideoId + '?autoplay=1&start=0';
 
       roll.classList.add('active');
       document.getElementById('bait').style.display = 'none';
